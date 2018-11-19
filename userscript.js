@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MKM wants list price calculator
 // @namespace    http://tampermonkey.net/
-// @version      0.2.1
+// @version      0.2.2
 // @description  Calculates and prints the total value of a want list in cardmarket.com.
 // @author       Thomas Wilhelm
 // @include      https://www.cardmarket.com/en/Magic/MainPage/showWants*
@@ -13,8 +13,6 @@
     'use strict';
 
     const rows = document.querySelectorAll('table.MKMTable.wantsTable tbody tr');
-    // Ingore cards matching this regex
-    const basicLands = /^(island|insel|forest|wald|mountain|gebirge|plains|ebene|swamp|sumpf)( \(version [0-9]\))?$/gi;
     let totalPrice = 0.0;
     let totalPriceWithoutBasics = 0.0;
 
@@ -23,6 +21,8 @@
         const value = parseFloat(cells[12].querySelector('div').textContent.replace(',', '.'));
         totalPrice += value;
 
+        // Ingore cards matching this regex
+        const basicLands = /^(island|insel|forest|wald|mountain|gebirge|plains|ebene|swamp|sumpf)(\s\(version\s[0-9]\))?$/gi;
         const cardName = cells[2].querySelector('a').textContent;
         if (basicLands.test(cardName) === false) {
             totalPriceWithoutBasics += value;
